@@ -2,14 +2,16 @@
 import json
 
 from django.http import HttpRequest, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from app01.SpiderWeb.DmhyorgSpider import DmhyorgSearch
 from app01.SpiderWeb.LzacgSpider import LzacgSpider
 
 
+@csrf_exempt
 def dmhy_search(req: HttpRequest):
-    key = req.GET.get(key='key')
-    page = req.GET.get(key='page')
+    key = req.POST.get(key='key')
+    page = req.POST.get(key='page')
     dmhy = DmhyorgSearch(key=key, page=page)
     resources = dmhy.get_search_res()
     if type(resources) == list:
@@ -24,9 +26,10 @@ def dmhy_search(req: HttpRequest):
         return HttpResponse(resources)
 
 
+@csrf_exempt
 def lzacg_search(req: HttpRequest):
-    key = req.GET.get('key')
-    page = req.GET.get('page')
+    key = req.POST.get('key')
+    page = req.POST.get('page')
     lzacg = LzacgSpider(key=key, page=page)
     resource = lzacg.get_search_res()
     if type(resource) == list:

@@ -18,6 +18,6 @@ from django.urls import path
 import app01.views
 
 urlpatterns = [
-    path("dmhysearch/", app01.views.dmhy_search),
-    path("lzacgsearch/", app01.views.lzacg_search),
+    path("dmhysearch", app01.views.dmhy_search),
+    path("lzacgsearch", app01.views.lzacg_search),
 ]
