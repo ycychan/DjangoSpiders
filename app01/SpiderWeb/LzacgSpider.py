@@ -31,7 +31,7 @@ class LzacgSpider(Spider):
             json_res_list = []
             posts = re.findall(r'<posts.*?>([\s\S]*?)</posts>', self.resp.text)
             if len(posts) == 0:
-                return json.dumps({"error": "已经是最后一页或者没有此页面"})
+                return json.dumps({"error": "posts = 0\tline:34"})
             for i in range(0, len(posts)):
                 # 标题与链接
                 res_title_and_url = self.get_title_url(posts[i])
@@ -55,39 +55,28 @@ class LzacgSpider(Spider):
     @staticmethod
     def get_title_url(post):
         """获取标题与资源链接"""
-        try:
-            title_and_url = re.findall(r'<h2.*?"item-heading">([\S\s]*?)</h2>', post)[0]
-            res_title = re.findall(r'<a.*?>([\s\S]*?)</a>', title_and_url)[0]
-            res_url = re.findall(r'<a.*?href="([\s\S]*?)"', title_and_url)[0]
-            if res_title == '' and res_url != '':
-                return ['EOR:1012', res_url]
-            if res_url == '' and res_title != '':
-                return [res_title, 'EOR:1012']
-            return [res_title, res_url]
-        except Exception as e:
-            logging.error(traceback.format_exc())
-            return ["EOR:1012", "EOR:1013", traceback.format_exc()]
+        title_and_url = re.findall(r'<h2.*?"item-heading">([\S\s]*?)</h2>', post)[0]
+        res_title = re.findall(r'<a.*?>([\s\S]*?)</a>', title_and_url)[0]
+        res_url = re.findall(r'<a.*?href="([\s\S]*?)"', title_and_url)[0]
+        if res_title == '' and res_url != '':
+            return ['EOR:1012', res_url]
+        if res_url == '' and res_title != '':
+            return [res_title, 'EOR:1012']
+        return [res_title, res_url]
 
     @staticmethod
     def get_image_url(post):
         """获取图片链接"""
-        try:
-            div_img = re.findall(r'<div.*?"item-thumbnail".*?>([\s\S]*?)</div>', post)[0]
-            res_img_url = re.findall(r'img.src="([\s\S]*?)"', div_img)[0]
-            if res_img_url == '':
-                return 'EOR:1014'
-        except Exception as e:
-            logging.error(traceback.format_exc())
+        div_img = re.findall(r'<div.*?"item-thumbnail".*?>([\s\S]*?)</div>', post)[0]
+        res_img_url = re.findall(r'img.src="([\s\S]*?)"', div_img)[0]
+        if res_img_url == '':
             return 'EOR:1014'
+        return res_img_url
 
     @staticmethod
     def get_send_time(post):
-        try:
-            body_item = etree.HTML(post)
-            item = body_item.xpath('//item[contains(@class,"icon-circle")]/@title')[0]
-            if item == '':
-                return 'EOR:1017'
-            return item
-        except Exception as e:
-            logging.error(traceback.format_exc())
+        body_item = etree.HTML(post)
+        item = body_item.xpath('//item[contains(@class,"icon-circle")]/@title')[0]
+        if item == '':
             return 'EOR:1017'
+        return item

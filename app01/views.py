@@ -1,4 +1,6 @@
 # Create your views here.
+import json
+
 from django.http import HttpRequest, HttpResponse
 
 from app01.SpiderWeb.DmhyorgSpider import DmhyorgSearch
@@ -15,7 +17,9 @@ def dmhy_search(req: HttpRequest):
             'log': resources[0],
             'error': resources[1]
         }
-        return HttpResponse("EOR:500")
+        json_error = json.dumps(error_msg)
+        print(json_error)
+        return HttpResponse(json_error)
     else:
         return HttpResponse(resources)
 
@@ -30,6 +34,8 @@ def lzacg_search(req: HttpRequest):
             'log': resource[0],
             'error': resource[1]
         }
-        return HttpResponse("EOR:500")
+        json_error = json.dumps(error_msg)
+        print(json_error)
+        return HttpResponse(json_error)
     else:
         return HttpResponse(resource)
