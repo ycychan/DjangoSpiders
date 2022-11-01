@@ -23,7 +23,7 @@ search_form.submit(function (e) {
     if (search_text !== '') {
         $.ajax({
             type: "POST",
-            url: "http://127.0.0.1:8000/lzacgsearch",
+            url: "http://ycyspace.cn/lzacgsearch",
             data: JSON.stringify({'key': search_text, 'page': page_number}),
             datatype: "json",
             cache: false,
