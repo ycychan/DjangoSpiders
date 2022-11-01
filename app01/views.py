@@ -17,7 +17,7 @@ def dmhy_search(req: HttpRequest):
     page = json_body['page']
     dmhy = DmhyorgSearch(key=key, page=page)
     resources = dmhy.get_search_res()
-    resp(resources)
+    return resp(resources)
 
 
 @csrf_exempt
