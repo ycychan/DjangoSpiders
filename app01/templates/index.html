@@ -1,14 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
 </head>
+
 <body>
-<form method="post" action="http://127.0.0.1:8000/lzacgsearch">
-    <input name="key" type="text"/>
-    <input type="number" name="page"/>
-    <button type="submit">搜索</button>
-</form>
+<div class="search-input">
+    <form class="search-form">
+        <div class="search-input-text">
+            <label>
+                <input class="line-form-input" type="text"/>
+            </label>
+        </div>
+    </form>
+</div>
+<div class="content-layout">
+    <div class="search-content">1</div>
+</div>
+<script src="{% static 'mydir.js' %}"></script>
 </body>
+
 </html>
