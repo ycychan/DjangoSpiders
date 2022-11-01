@@ -17,7 +17,7 @@ def dmhy_search(req: HttpRequest):
     page = json_body['page']
     dmhy = DmhyorgSearch(key=key, page=page)
     resources = dmhy.get_search_res()
-    return resp(resources)
+    return resp_parser(resources)
 
 
 @csrf_exempt
@@ -27,14 +27,14 @@ def lzacg_search(req: HttpRequest):
     page = json_body['page']
     lzacg = LzacgSpider(key=key, page=page)
     resource = lzacg.get_search_res()
-    return resp(resource)
+    return resp_parser(resource)
 
 
 def index(req: HttpRequest):
     return render(req, 'index.html')
 
 
-def resp(resource):
+def resp_parser(resource):
     if type(resource) == list:
         error_msg = {
             'log': resource[0],
@@ -42,6 +42,12 @@ def resp(resource):
         }
         json_error = json.dumps(error_msg)
         logging.error(json_error)
-        return HttpResponse(json_error, content_type="application/json")
+        resp = HttpResponse(resource, content_type="application/json")
+        resp['Access-Control-Allow-Headers'] = 'Content-Type'
+        resp['Access-Control-Allow-Origin'] = '*'
+        return resp
     else:
-        return HttpResponse(resource, content_type="application/json")
+        resp = HttpResponse(resource, content_type="application/json")
+        resp['Access-Control-Allow-Headers'] = 'Content-Type'
+        resp['Access-Control-Allow-Origin'] = '*'
+        return resp
