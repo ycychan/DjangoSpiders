@@ -43,5 +43,4 @@ search_form.submit(function (e) {
             }
         });
     }
-
 });
