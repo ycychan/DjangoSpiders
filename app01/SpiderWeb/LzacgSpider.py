@@ -80,3 +80,11 @@ class LzacgSpider(Spider):
         if item == '':
             return 'EOR:1017'
         return item
+
+
+class LzacgHomeSpider(Spider):
+    def __init__(self):
+        super().__init__('https://lzacg.one/galgame')
+
+    def get_home_res(self):
+        pass

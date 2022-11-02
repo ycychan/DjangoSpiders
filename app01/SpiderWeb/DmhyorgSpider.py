@@ -10,10 +10,10 @@ from app01.SpiderWeb.Spider import Spider
 
 
 class DmhyorgSearch(Spider):
-    home = 'https://dmhy.b168.net'
+    home = 'https://dmhy.anoneko.com/'
 
     def __init__(self, key, page):
-        super().__init__(f'https://dmhy.b168.net/topics/list/page/{page}?keyword={key}')
+        super().__init__(f'https://dmhy.anoneko.com/topics/list/page/{page}?keyword={key}')
 
     # 获取搜索后的结果
     def get_search_res(self):
@@ -67,7 +67,8 @@ class DmhyorgSearch(Spider):
                     'res_size': res_size,
                     'res_magnet_quantity': res_magnet_quantity,
                     'res_publisher': res_publisher,
-                    'res_publisher_url': res_publisher_url
+                    'res_publisher_url': res_publisher_url,
+                    'res_url': res_url
                 })
             json_res = json.dumps(json_res_list)
             return HttpResponse(json_res)
@@ -80,12 +81,15 @@ class DmhyorgSearch(Spider):
     @staticmethod
     def get_send_time(td):
         # 发布日期
-        return re.findall(r'>(.*?)<', td)[0]
+        send_time = re.findall(r'>(.*?)<', td)[0]
+        send_time = re.sub(r'/', '-', send_time)
+        send_time = send_time + ':00'
+        return send_time
 
     @staticmethod
     def get_res_type(td):
         # 资源类型
-        return re.findall(r'<font.*>(.*?)</font>', td)
+        return re.findall(r'<font.*>(.*?)</font>', td)[0]
 
     @staticmethod
     def get_res_group(td, home):
@@ -169,3 +173,7 @@ class DmhyorgSearch(Spider):
         except Exception as e:
             logging.error(e.args)
             return ['EOR:1010', 'EOR:1011']
+
+
+class DmhyHomeSpider(Spider):
+    pass

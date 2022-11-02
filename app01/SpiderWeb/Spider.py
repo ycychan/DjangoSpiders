@@ -1,6 +1,6 @@
-import bs4
+import httpx
+import parsel as parsel
 import requests
-from lxml import etree
 
 from app01 import header
 
@@ -8,4 +8,5 @@ from app01 import header
 class Spider:
 
     def __init__(self, url):
-        self.resp = requests.get(url, headers=header.get_random_user_agents())
+        self.resp = httpx.get(url, headers=header.get_random_user_agents())
+        self.parser = parsel.Selector(self.resp.text)
