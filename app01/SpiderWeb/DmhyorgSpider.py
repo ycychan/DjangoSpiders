@@ -190,8 +190,12 @@ class DmhyHomeSpider(Spider):
                 return json.dumps({'error:EOR': 'EOR:1018'})
             for tr in trs:
                 tds = tr.css('td')
-                res_send_time = self.get_send_time(tds[0])
-                print(res_send_time)
+                res_send_time_data = self.get_send_time(tds[0])
+                res_send_time = res_send_time_data[0]
+                res_send_time_text = res_send_time_data[1]
+                res_type = self.get_res_type(tds[1])
+                res_author_title = self.get_res_author_title(tds[2])
+                print(res_type)
 
         except Exception as e:
             logging.error(
@@ -201,6 +205,32 @@ class DmhyHomeSpider(Spider):
 
     @staticmethod
     def get_send_time(td: parsel.Selector):
-        send_time = re.sub(r'/', '-', td.re(r'<span.*?>([\s\S]*?)</span>')[0])
-        send_time_text = td.re(r'')
-        return [send_time]
+        try:
+            send_time = re.sub(r'/', '-', td.re(r'<span.*?>([\s\S]*?)</span>')[0])
+            send_time_text = td.re(r'(.*?)<span')[0]
+            if send_time_text == '':
+                return [send_time, 'EOR:1020']
+            if send_time == '':
+                return ['EOR:1019', send_time_text]
+            return [send_time, send_time_text]
+        except Exception as e:
+            return ['EOR:1019', 'EOR:1020']
+
+    @staticmethod
+    def get_res_type(td: parsel.Selector):
+        try:
+            res_type = td.re(r'<font.*?>([\s\S]*?)</font>')[0]
+            if res_type == '':
+                return 'EOR:1021'
+            return res_type
+        except Exception as e:
+            return e
+
+
+    @staticmethod
+    def get_res_author_title(td: parsel.Selector):
+        try:
+            td.re('')
+        except Exception as e:
+            pass
+        pass
