@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from app01.SpiderWeb.DmhyorgSpider import DmhyorgSearch
-from app01.SpiderWeb.LzacgSpider import LzacgSpider
+from app01.SpiderWeb.LzacgSpider import LzacgSpider, LzacgHomeSpider
 
 
 @csrf_exempt
@@ -16,8 +16,8 @@ def dmhy_search(req: HttpRequest):
     key = json_body['key']
     page = json_body['page']
     dmhy = DmhyorgSearch(key=key, page=page)
-    resources = dmhy.get_search_res()
-    return resp_parser(resources)
+    res = dmhy.get_search_res()
+    return resp_parser(res)
 
 
 @csrf_exempt
@@ -26,8 +26,15 @@ def lzacg_search(req: HttpRequest):
     key = json_body['key']
     page = json_body['page']
     lzacg = LzacgSpider(key=key, page=page)
-    resource = lzacg.get_search_res()
-    return resp_parser(resource)
+    res = lzacg.get_search_res()
+    return resp_parser(res)
+
+
+@csrf_exempt
+def lzacg_home(req: HttpRequest):
+    lzacg = LzacgHomeSpider()
+    res = lzacg.get_home_res()
+    return resp_parser(res)
 
 
 def index(req: HttpRequest):

@@ -10,6 +10,7 @@ import re
 import time
 import traceback
 
+import parsel
 from django.http import HttpResponse
 from lxml import etree
 
@@ -17,7 +18,7 @@ from app01.SpiderWeb.Spider import Spider
 
 
 class LzacgSpider(Spider):
-    home = "https://lzacg.one/"
+    home = "https://lzacg.one/galgame"
 
     def __init__(self, key, page):
         if page == 1:
@@ -87,4 +88,60 @@ class LzacgHomeSpider(Spider):
         super().__init__('https://lzacg.one/galgame')
 
     def get_home_res(self):
-        pass
+        try:
+            json_res_list = []
+            posts = self.parser.css('.content-wrap .posts-row posts')
+            if len(posts) < 1:
+                return json.dumps({'resource': 'NULL 没有此资源或获取失败'})
+            for k in range(0, len(posts)):
+                res_img_data = self.get_res_img(posts[k])
+                res_img_url = res_img_data[0]
+                res_img_title = res_img_data[1]
+                res_content_a = self.get_res_title_and_url(posts[k])
+                res_url = res_content_a[0]
+                res_title = res_content_a[1]
+                res_author = self.get_res_author(posts[k])
+                res_send_time = self.get_res_send_time(posts[k])
+                json_res_list.append({'res_img_url': res_img_url,
+                                      'res_img_title': res_img_title,
+                                      'res_url': res_url,
+                                      'res_title': res_title,
+                                      'res_author': res_author,
+                                      'res_send_time': res_send_time})
+            json_data = json.dumps(json_res_list)
+            print(json_data)
+            return json_data
+        except Exception as e:
+            logging.error(
+                f'[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]：\n{traceback.format_exc()}'
+            )
+            return [e, f'[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]：\n{traceback.format_exc()}']
+
+    @staticmethod
+    def get_res_img(posts):
+        """资源图片信息"""
+        img = posts.css('.item-thumbnail a img')[0]
+        res_img_url = img.attrib['src']
+        res_img_title = img.attrib['alt']
+        return [res_img_url, res_img_title]
+
+    @staticmethod
+    def get_res_title_and_url(posts):
+        """资源标题与url"""
+        content_a: parsel.Selector = posts.css('.item-body h2 a')[0]
+        res_url = content_a.attrib['href']
+        res_title = content_a.re(r'<a.*?>([\s\S]*?)</a>', False)[0]
+        return [res_url, res_title]
+
+    @staticmethod
+    def get_res_author(posts):
+        """资源制作商"""
+        content = posts.css('.item-tags a')[0]
+        res_author = content.re(r'<a.*?>([\s\S]*?)</a>', False)[0]
+        res_author = re.sub(r'#.', '', res_author)
+        return res_author
+
+    @staticmethod
+    def get_res_send_time(posts):
+        """资源发布时间"""
+        return posts.css('.item-meta item').attrib['title']

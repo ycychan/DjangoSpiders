@@ -20,5 +20,6 @@ import app01.views
 urlpatterns = [
     path("dmhysearch", app01.views.dmhy_search),
     path("lzacgsearch", app01.views.lzacg_search),
+    path("lzacghome", app01.views.lzacg_home),
     path("admin/", app01.views.index),
 ]
