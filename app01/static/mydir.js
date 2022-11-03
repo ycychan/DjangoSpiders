@@ -5,8 +5,7 @@
 // Warring!
 
 const div_search_content = $(".content-layout .search-content");
-const home_posts_raw = $('#index-tab-main')
-const self_url = window.location.href;
+const home_posts_raw = $('.tab-content .posts-row')
 const search_input = $(".search-input-text .line-form-input");
 const search_form = $(".search-form");
 let first_text = '';
