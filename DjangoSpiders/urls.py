@@ -21,5 +21,6 @@ urlpatterns = [
     path("dmhysearch", app01.views.search),
     path("lzacgsearch", app01.views.search),
     path("lzacghome", app01.views.home),
+    path("dmhyhome", app01.views.home),
     path("admin/", app01.views.index),
 ]

@@ -8,12 +8,13 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 import webhome
-from app01.SpiderWeb.DmhyorgSpider import DmhyorgSearch
+from app01.SpiderWeb.DmhyorgSpider import DmhyorgSearch, DmhyHomeSpider
 from app01.SpiderWeb.LzacgSpider import LzacgSpider, LzacgHomeSpider
 
 
 @csrf_exempt
 def search(req: HttpRequest):
+    """需要添加的所有爬虫都必须将入口函数定义为get_search_res()"""
     json_body = json.loads(req.body.decode())
     key = json_body['key']
     page = json_body['page']
@@ -26,7 +27,9 @@ def search(req: HttpRequest):
 
 @csrf_exempt
 def home(req: HttpRequest):
+    """需要添加的所有爬虫都需要将入口函数定义为get_home_res"""
     mapping = re.sub(r'/', '', req.path_info)
+    print(mapping)
     homo = globals()[webhome.home_reflex[mapping]]()
     res = homo.get_home_res()
     return resp_parser(res)

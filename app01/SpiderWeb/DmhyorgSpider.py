@@ -4,6 +4,7 @@ import re
 import time
 import traceback
 
+import parsel
 from django.http import HttpResponse
 
 from app01.SpiderWeb.Spider import Spider
@@ -182,12 +183,24 @@ class DmhyHomeSpider(Spider):
     def __init__(self):
         super().__init__(self.home)
 
-    def get_home(self):
+    def get_home_res(self):
         try:
             trs = self.parser.css('#topic_list > tbody > tr')
-            print(trs)
+            if len(trs) == 0:
+                return json.dumps({'error:EOR': 'EOR:1018'})
+            for tr in trs:
+                tds = tr.css('td')
+                res_send_time = self.get_send_time(tds[0])
+                print(res_send_time)
+
         except Exception as e:
             logging.error(
                 f'[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]：\n{traceback.format_exc()}'
             )
             return [e, f'[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]：\n{traceback.format_exc()}']
+
+    @staticmethod
+    def get_send_time(td: parsel.Selector):
+        send_time = re.sub(r'/', '-', td.re(r'<span.*?>([\s\S]*?)</span>')[0])
+        send_time_text = td.re(r'')
+        return [send_time]

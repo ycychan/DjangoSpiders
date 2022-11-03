@@ -36,10 +36,11 @@ search_form.submit(function (e) {
         first_text = search_text;
     }
     if (search_text !== '') {
-        postsSpiderPost('lzacgsearch', search_text, page_number);
+        // postsSpiderPost('lzacgsearch', search_text, page_number);
         // postsSpiderPost('dmhysearch', search_text, page_number);
     } else {
         // postsSpiderPost('lzacghome')
+        postsSpiderPost('dmhyhome')
     }
     search_input.show();
 });
