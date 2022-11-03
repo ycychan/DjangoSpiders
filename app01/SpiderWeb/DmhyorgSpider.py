@@ -184,6 +184,7 @@ class DmhyHomeSpider(Spider):
         super().__init__(self.home)
 
     def get_home_res(self):
+        json_res_list = []
         try:
             trs = self.parser.css('#topic_list > tbody > tr')
             if len(trs) == 0:
@@ -194,8 +195,24 @@ class DmhyHomeSpider(Spider):
                 res_send_time = res_send_time_data[0]
                 res_send_time_text = res_send_time_data[1]
                 res_type = self.get_res_type(tds[1])
-                res_author_title = self.get_res_author_title(tds[2])
-                print(res_type)
+                res_author_title = self.get_res_author_title(tds[2], self.home)
+                res_author = res_author_title[0]
+                res_author_url = res_author_title[1]
+                res_title = res_author_title[2]
+                res_url = res_author_title[3]
+                res_downlink = self.get_res_downlink(tds[3])
+                res_magent = res_downlink[0]
+                res_pikpak = res_downlink[1]
+                json_res_list.append({'res_title': res_title,
+                                      'res_url': res_url,
+                                      'res_author': res_author,
+                                      'res_author_url': res_author_url,
+                                      'res_send_time': res_send_time,
+                                      'res_send_time_text': res_send_time_text,
+                                      'res_type': res_type,
+                                      'res_magent': res_magent,
+                                      'res_pikpak': res_pikpak})
+            return json.dumps(json_res_list)
 
         except Exception as e:
             logging.error(
@@ -208,9 +225,9 @@ class DmhyHomeSpider(Spider):
         try:
             send_time = re.sub(r'/', '-', td.re(r'<span.*?>([\s\S]*?)</span>')[0])
             send_time_text = td.re(r'(.*?)<span')[0]
-            if send_time_text == '':
+            if send_time_text is None:
                 return [send_time, 'EOR:1020']
-            if send_time == '':
+            if send_time is None:
                 return ['EOR:1019', send_time_text]
             return [send_time, send_time_text]
         except Exception as e:
@@ -220,17 +237,37 @@ class DmhyHomeSpider(Spider):
     def get_res_type(td: parsel.Selector):
         try:
             res_type = td.re(r'<font.*?>([\s\S]*?)</font>')[0]
-            if res_type == '':
+            if res_type is None:
                 return 'EOR:1021'
             return res_type
         except Exception as e:
             return e
 
+    @staticmethod
+    def get_res_author_title(td: parsel.Selector, home_url):
+        try:
+            try:
+                res_author = td.css('span').re(r'<a.*?>([\s\S]*?)</a>')[0]
+                res_author_url = home_url + td.css('span > a')[0].attrib['href']
+                res_title = re.findall(r'<a.*?>([\s\S]*?)</a>', str(td.css('span + a').get()))[0]
+                res_url = home_url + td.css('span + a').attrib['href']
+            except IndexError:
+                res_author = 'EOR:1022'
+                res_author_url = 'EOR:1023'
+                res_title = td.re('<a.*?>([\S\s]*?)</a>')
+                res_url = home_url + td.xpath('//td/a/@href').get()
+            return [res_author, res_author_url, res_title, res_url]
+        except Exception as e:
+            traceback.print_exc()
+            return ['EOR:1022', 'EOR:1023', 'EOR:NULL,EOR:NULL']
+            pass
 
     @staticmethod
-    def get_res_author_title(td: parsel.Selector):
-        try:
-            td.re('')
-        except Exception as e:
-            pass
-        pass
+    def get_res_downlink(td: parsel.Selector):
+        res_magent = td.xpath('//td/a[@title="磁力下載"]/@href').get()
+        res_pikpak = td.xpath('//td/a[contains(@class,"download-pikpak")]/@href').get()
+        return [res_magent, res_pikpak]
+
+    @staticmethod
+    def get_res_size(td: parsel.Selector):
+        return td.xpath('//td/text()').get()
