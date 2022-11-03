@@ -1,46 +1,38 @@
 # Create your views here.
 import json
 import logging
+import re
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+import webhome
 from app01.SpiderWeb.DmhyorgSpider import DmhyorgSearch
 from app01.SpiderWeb.LzacgSpider import LzacgSpider, LzacgHomeSpider
 
 
 @csrf_exempt
-def dmhy_search(req: HttpRequest):
+def search(req: HttpRequest):
     json_body = json.loads(req.body.decode())
     key = json_body['key']
     page = json_body['page']
-    dmhy = DmhyorgSearch(key=key, page=page)
-    res = dmhy.get_search_res()
+    mapping = re.sub(r'/', '', req.path_info)
+    # IOC 创建对象
+    searci = globals()[webhome.search_reflex[mapping]](key, page)
+    res = searci.get_search_res()
     return resp_parser(res)
 
 
 @csrf_exempt
-def lzacg_search(req: HttpRequest):
-    json_body = json.loads(req.body.decode())
-    key = json_body['key']
-    page = json_body['page']
-    lzacg = LzacgSpider(key=key, page=page)
-    res = lzacg.get_search_res()
+def home(req: HttpRequest):
+    mapping = re.sub(r'/', '', req.path_info)
+    homo = globals()[webhome.home_reflex[mapping]]()
+    res = homo.get_home_res()
     return resp_parser(res)
 
 
-@csrf_exempt
-def lzacg_home(req: HttpRequest):
-    lzacg = LzacgHomeSpider()
-    res = lzacg.get_home_res()
-    return resp_parser(res)
-
-
-def index(req: HttpRequest):
-    return render(req, 'index.html')
-
-
+# 响应爬取的资源
 def resp_parser(resource):
     if type(resource) == list:
         error_msg = {
@@ -58,3 +50,7 @@ def resp_parser(resource):
         resp['Access-Control-Allow-Headers'] = 'Content-Type'
         resp['Access-Control-Allow-Origin'] = '*'
         return resp
+
+
+def index(req):
+    return render(req, 'index.html')

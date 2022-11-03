@@ -14,17 +14,18 @@ import parsel
 from django.http import HttpResponse
 from lxml import etree
 
+from webhome import web_home
 from app01.SpiderWeb.Spider import Spider
 
 
 class LzacgSpider(Spider):
-    home = "https://lzacg.one/galgame"
+    home = web_home['量子ACG']
 
     def __init__(self, key, page):
         if page == 1:
-            super().__init__(f'https://lzacg.one/?s={key}')
+            super().__init__(f'{self.home}/?s={key}')
         else:
-            super().__init__(f'https://lzacg.one/page/{page}?s={key}')
+            super().__init__(f'{self.home}/page/{page}?s={key}')
 
     def get_search_res(self):
         # 存放将要转换为json的数据数组
@@ -84,8 +85,10 @@ class LzacgSpider(Spider):
 
 
 class LzacgHomeSpider(Spider):
+    home = web_home['量子ACG']
+
     def __init__(self):
-        super().__init__('https://lzacg.one/galgame')
+        super().__init__(f'{self.home}/galgame')
 
     def get_home_res(self):
         try:

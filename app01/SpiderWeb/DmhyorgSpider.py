@@ -7,13 +7,14 @@ import traceback
 from django.http import HttpResponse
 
 from app01.SpiderWeb.Spider import Spider
+from webhome import web_home
 
 
 class DmhyorgSearch(Spider):
-    home = 'https://dmhy.anoneko.com/'
+    home = web_home["动漫花园"]
 
     def __init__(self, key, page):
-        super().__init__(f'https://dmhy.anoneko.com/topics/list/page/{page}?keyword={key}')
+        super().__init__(f'{self.home}/topics/list/page/{page}?keyword={key}')
 
     # 获取搜索后的结果
     def get_search_res(self):
@@ -176,4 +177,17 @@ class DmhyorgSearch(Spider):
 
 
 class DmhyHomeSpider(Spider):
-    pass
+    home = web_home['动漫花园']
+
+    def __init__(self):
+        super().__init__(self.home)
+
+    def get_home(self):
+        try:
+            trs = self.parser.css('#topic_list > tbody > tr')
+            print(trs)
+        except Exception as e:
+            logging.error(
+                f'[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]：\n{traceback.format_exc()}'
+            )
+            return [e, f'[{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())}]：\n{traceback.format_exc()}']
