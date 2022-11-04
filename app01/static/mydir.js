@@ -32,7 +32,6 @@ const postsFunction = {
 
 // 页面加载完毕之后加载posts进入content中
 $(function (e) {
-    home_posts_raw = $('.tab-content .posts-row')
     search_input.hide();
     let search_text = search_input.val();
     if (first_text !== search_text) {
@@ -43,8 +42,8 @@ $(function (e) {
         postsSpiderPost('lzacgsearch', search_text, page_number, true);
         postsSpiderPost('dmhysearch', search_text, page_number, true);
     } else {
-        postsSpiderPost('lzacghome', false)
-        postsSpiderPost('dmhyhome', false)
+        postsSpiderPost('lzacghome')
+        postsSpiderPost('dmhyhome')
     }
     search_input.show();
 });

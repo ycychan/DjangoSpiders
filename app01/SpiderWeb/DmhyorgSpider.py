@@ -203,6 +203,7 @@ class DmhyHomeSpider(Spider):
                 res_downlink = self.get_res_downlink(tds[3])
                 res_magent = res_downlink[0]
                 res_pikpak = res_downlink[1]
+                res_size = self.get_res_size(tds[4])
                 json_res_list.append({'res_title': res_title,
                                       'res_url': res_url,
                                       'res_author': res_author,
@@ -211,7 +212,8 @@ class DmhyHomeSpider(Spider):
                                       'res_send_time_text': res_send_time_text,
                                       'res_type': res_type,
                                       'res_magent': res_magent,
-                                      'res_pikpak': res_pikpak})
+                                      'res_pikpak': res_pikpak,
+                                      'res_size': res_size})
             return json.dumps(json_res_list)
 
         except Exception as e:
