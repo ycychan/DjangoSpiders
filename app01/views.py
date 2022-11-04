@@ -39,10 +39,10 @@ def home(req: HttpRequest):
 def resp_parser(resource):
     if type(resource) == list:
         error_msg = {
-            'log': resource[0],
-            'error': resource[1]
+            'res_title': resource[0],
+            'res_url': resource[1]
         }
-        json_error = json.dumps(error_msg)
+        json_error = json.dumps([error_msg])
         logging.error(json_error)
         resp = HttpResponse(resource, content_type="application/json")
         resp['Access-Control-Allow-Headers'] = 'Content-Type'
