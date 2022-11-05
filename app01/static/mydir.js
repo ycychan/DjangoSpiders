@@ -7,12 +7,8 @@
 const div_search_content = $(".content-layout .search-content");
 let home_posts_raw = $('.tab-content .posts-row')
 const search_input = $(".search-input-text .line-form-input");
-const search_form = $(".search-form");
 let first_text = '';
 let page_number = 1;
-
-console.log(div_search_content)
-
 
 // 定义每一个资源的提取方式
 const postsFunction = {
@@ -41,9 +37,6 @@ $(function (e) {
     if (search_text !== '') {
         postsSpiderPost('lzacgsearch', search_text, page_number, true);
         postsSpiderPost('dmhysearch', search_text, page_number, true);
-    } else {
-        postsSpiderPost('lzacghome')
-        postsSpiderPost('dmhyhome')
     }
     search_input.show();
 });
@@ -53,12 +46,11 @@ function postsSpiderPost(entrance, search_text = '', page_number = 1, search = f
     let x = false;
     $.ajax({
         type: "POST",
-        url: "https://ycyspace.cn/" + entrance,
+        url: "http://127.0.0.1:8000/" + entrance,
         data: JSON.stringify({'key': search_text, 'page': page_number}),
         datatype: "json",
         cache: false,
         success: function (resp) {
-            console.log(resp);
             let json_data = resp;
             if (search) {
                 for (let i = 0; i < json_data.length; i++) {

@@ -29,7 +29,6 @@ def search(req: HttpRequest):
 def home(req: HttpRequest):
     """需要添加的所有爬虫都需要将入口函数定义为get_home_res"""
     mapping = re.sub(r'/', '', req.path_info)
-    print(mapping)
     homo = globals()[webhome.home_reflex[mapping]]()
     res = homo.get_home_res()
     return resp_parser(res)
@@ -44,7 +43,7 @@ def resp_parser(resource):
         }
         json_error = json.dumps([error_msg])
         logging.error(json_error)
-        resp = HttpResponse(resource, content_type="application/json")
+        resp = HttpResponse(json_error, content_type="application/json")
         resp['Access-Control-Allow-Headers'] = 'Content-Type'
         resp['Access-Control-Allow-Origin'] = '*'
         return resp

@@ -88,13 +88,13 @@ class LzacgHomeSpider(Spider):
     home = web_home['量子ACG']
 
     def __init__(self):
-        super().__init__(f'{self.home}/galgame')
+        super().__init__(f'{self.home}galgame')
 
     def get_home_res(self):
         try:
             json_res_list = []
             posts = self.parser.css('.content-wrap .posts-row posts')
-            if len(posts) < 1:
+            if len(posts) == 1:
                 return json.dumps({'resource': 'NULL 没有此资源或获取失败'})
             for k in range(0, len(posts)):
                 res_img_data = self.get_res_img(posts[k])
@@ -112,7 +112,6 @@ class LzacgHomeSpider(Spider):
                                       'res_author': res_author,
                                       'res_send_time': res_send_time})
             json_data = json.dumps(json_res_list)
-            print(json_data)
             return json_data
         except Exception as e:
             logging.error(
