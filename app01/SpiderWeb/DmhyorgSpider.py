@@ -256,7 +256,7 @@ class DmhyHomeSpider(Spider):
             except IndexError:
                 res_author = 'EOR:1022'
                 res_author_url = 'EOR:1023'
-                res_title = td.re('<a.*?>([\S\s]*?)</a>')
+                res_title = td.re('<a.*?>([\S\s]*?)</a>')[0]
                 res_url = home_url + td.xpath('//td/a/@href').get()
             return [res_author, res_author_url, res_title, res_url]
         except Exception as e:

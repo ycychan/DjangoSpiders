@@ -111,6 +111,7 @@ class LzacgHomeSpider(Spider):
                                       'res_title': res_title,
                                       'res_author': res_author,
                                       'res_send_time': res_send_time})
+            logging.error(json_res_list)
             json_data = json.dumps(json_res_list)
             return json_data
         except Exception as e:

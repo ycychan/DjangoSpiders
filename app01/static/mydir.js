@@ -37,6 +37,9 @@ $(function (e) {
     if (search_text !== '') {
         postsSpiderPost('lzacgsearch', search_text, page_number, true);
         postsSpiderPost('dmhysearch', search_text, page_number, true);
+    } else {
+        postsSpiderPost('lzacghome')
+        postsSpiderPost('dmhyhome')
     }
     search_input.show();
 });
@@ -51,6 +54,7 @@ function postsSpiderPost(entrance, search_text = '', page_number = 1, search = f
         datatype: "json",
         cache: false,
         success: function (resp) {
+            console.log(resp);
             let json_data = resp;
             if (search) {
                 for (let i = 0; i < json_data.length; i++) {
