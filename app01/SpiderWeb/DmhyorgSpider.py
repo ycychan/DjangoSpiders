@@ -274,4 +274,4 @@ class DmhyHomeSpider(Spider):
 
     @staticmethod
     def get_res_size(td: parsel.Selector):
-        return td.re(r'<td.*?>([\s\S]*?)</td>')
+        return td.re(r'<td.*?>([\s\S]*?)</td>')[0]
