@@ -204,6 +204,8 @@ class DmhyHomeSpider(Spider):
                 res_magent = res_downlink[0]
                 res_pikpak = res_downlink[1]
                 res_size = self.get_res_size(tds[4])
+                print(tds)
+                print(res_size)
                 json_res_list.append({'res_title': res_title,
                                       'res_url': res_url,
                                       'res_author': res_author,
@@ -272,4 +274,4 @@ class DmhyHomeSpider(Spider):
 
     @staticmethod
     def get_res_size(td: parsel.Selector):
-        return td.xpath('//td/text()').get()
+        return td.re(r'<td.*?>([\s\S]*?)</td>')
