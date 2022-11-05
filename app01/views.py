@@ -28,8 +28,10 @@ def search(req: HttpRequest):
 @csrf_exempt
 def home(req: HttpRequest):
     """需要添加的所有爬虫都需要将入口函数定义为get_home_res"""
+    page = json.loads(req.body.decode())['page']
+    print(page)
     mapping = re.sub(r'/', '', req.path_info)
-    homo = globals()[webhome.home_reflex[mapping]]()
+    homo = globals()[webhome.home_reflex[mapping]](page)
     res = homo.get_home_res()
     return resp_parser(res)
 

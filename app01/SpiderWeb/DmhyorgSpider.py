@@ -180,8 +180,11 @@ class DmhyorgSearch(Spider):
 class DmhyHomeSpider(Spider):
     home = web_home['动漫花园']
 
-    def __init__(self):
-        super().__init__(self.home)
+    def __init__(self, page):
+        if page > 1:
+            super().__init__(url=self.home + f'topics/list/page/{page}')
+        else:
+            super().__init__(url=self.home)
 
     def get_home_res(self):
         json_res_list = []
@@ -204,8 +207,6 @@ class DmhyHomeSpider(Spider):
                 res_magent = res_downlink[0]
                 res_pikpak = res_downlink[1]
                 res_size = self.get_res_size(tds[4])
-                print(tds)
-                print(res_size)
                 json_res_list.append({'res_title': res_title,
                                       'res_url': res_url,
                                       'res_author': res_author,

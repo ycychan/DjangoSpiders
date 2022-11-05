@@ -16,3 +16,6 @@ search_reflex = {'lzacgsearch': 'LzacgSpider',
 # 爬取类的主页反射类名
 home_reflex = {'lzacghome': 'LzacgHomeSpider',
                'dmhyhome': 'DmhyHomeSpider'}
+
+page_reflex = {'lzacgpage': '',
+               'dmhypage': ''}

@@ -22,7 +22,7 @@ class LzacgSpider(Spider):
     home = web_home['量子ACG']
 
     def __init__(self, key, page):
-        if page == 1:
+        if page <= 1:
             super().__init__(f'{self.home}/?s={key}')
         else:
             super().__init__(f'{self.home}/page/{page}?s={key}')
@@ -87,8 +87,11 @@ class LzacgSpider(Spider):
 class LzacgHomeSpider(Spider):
     home = web_home['量子ACG']
 
-    def __init__(self):
-        super().__init__(f'{self.home}galgame')
+    def __init__(self, page):
+        if page <= 1:
+            super().__init__(f'{self.home}galgame')
+        else:
+            super().__init__(f'{self.home}galgame/page/{page}')
 
     def get_home_res(self):
         try:
@@ -111,7 +114,6 @@ class LzacgHomeSpider(Spider):
                                       'res_title': res_title,
                                       'res_author': res_author,
                                       'res_send_time': res_send_time})
-            logging.error(json_res_list)
             json_data = json.dumps(json_res_list)
             return json_data
         except Exception as e:
@@ -139,10 +141,14 @@ class LzacgHomeSpider(Spider):
     @staticmethod
     def get_res_author(posts):
         """资源制作商"""
-        content = posts.css('.item-tags a')[0]
-        res_author = content.re(r'<a.*?>([\s\S]*?)</a>', False)[0]
-        res_author = re.sub(r'#.', '', res_author)
-        return res_author
+        content = None
+        try:
+            content = posts.css('.item-tags a')[0]
+            res_author = content.re(r'<a.*?>([\s\S]*?)</a>', False)[0]
+            res_author = re.sub(r'#.', '', res_author)
+            return res_author
+        except IndexError:
+            return 'EOR:1024'
 
     @staticmethod
     def get_res_send_time(posts):
