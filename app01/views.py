@@ -12,6 +12,11 @@ from app01.SpiderWeb.DmhyorgSpider import DmhyorgSearch, DmhyHomeSpider
 from app01.SpiderWeb.LzacgSpider import LzacgSpider, LzacgHomeSpider
 
 
+def default(req):
+    """首页返回值"""
+    return render(req, 'index.html')
+
+
 @csrf_exempt
 def search(req: HttpRequest):
     """需要添加的所有爬虫都必须将入口函数定义为get_search_res()"""

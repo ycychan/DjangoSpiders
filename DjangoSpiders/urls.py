@@ -18,6 +18,7 @@ from django.urls import path
 import app01.views
 
 urlpatterns = [
+    path("", app01.views.default),
     path("dmhysearch", app01.views.search),
     path("lzacgsearch", app01.views.search),
     path("lzacghome", app01.views.home),
