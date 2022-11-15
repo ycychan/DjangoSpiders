@@ -14,7 +14,7 @@ from app01.SpiderWeb.LzacgSpider import LzacgSpider, LzacgHomeSpider
 
 def default(req):
     """首页返回值"""
-    return render(req, 'index.html')
+    return render(req, '4-404/index.html')
 
 
 @csrf_exempt
